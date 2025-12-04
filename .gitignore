@@ -205,3 +205,17 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Ignore raw data
+data/raw/
+
+# Ignore models and outputs (if created later)
+outputs/
+models/
+
+# Ignore notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore Python cache
+__pycache__/
+*.pyc
