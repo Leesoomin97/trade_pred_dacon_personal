@@ -148,20 +148,25 @@ Version 10에서 성능이 비약적으로 상승했다:
 EDA 과정에서 다음과 같은 관찰을 통해 핵심 전략이 결정되었다.
 
 ### ✔ 1) 매우 심한 sparsity
+![품목별 활동](assets/eda_active_month.png)
+![item별 zero ratio](assets/eda_zero_ratio.png)
 - 전체 100개 품목 중 상당수는 거래가 거의 없음  
 - value=0인 월이 빈번하여 많은 품목이 **active months < 10** 수준  
 - 결과적으로 실제 공행성 탐색 가능한 품목은 **30~40개 규모**
 
 ### ✔ 2) weight·quantity·type 등 raw 속성의 활용성 거의 없음
+![weight, value 정규화](assets/eda_log.png)
 - type은 단일값  
 - weight/quantity는 단위 체계 불명확 + 연속성 없음  
 - value 중심 구조를 강제적으로 선택하게 됨
 
 ### ✔ 3) 이상치 존재
+![weight, value 분포도](assets/weight_value.png)
 - value=0인데 weight>0 등 물리적으로 불가능한 조합 다수  
 - raw column들을 그대로 feature로 쓰는 전략이 사실상 불가능
 
 ### ✔ 4) HS4 기반 군집이 실제 패턴을 설명하지 못함
+![hs4별 차이](assets/eda_hs4_cluster.png)
 - 동일 HS4라도:
   - 거래량 스케일 다름  
   - 변동성 다름  
@@ -178,6 +183,7 @@ lag 1~6 범위에서의 Pearson correlation이
   → 정적 lag 말고 **alignment 기반 FE 필요**
 
 ### ✔ 6) 계절성(seasonality)은 거의 없음
+![계절성 분석](assets/item_seasonality_value_trend.png)
 - month별 seasonality는 약함  
 - rolling 평균/분산의 정보량이 더 큼  
 - → calendar feature는 최소한으로만 사용
