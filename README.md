@@ -230,7 +230,6 @@ EDA 결과는 다음 설계를 강하게 뒷받침했다.
 raw 데이터의 noise가 많고, 활용 가능한 속성이 매우 제한적이었기 때문에  
 전처리는 “복잡한 정제”보다는 **구조를 재구성하는 단계**에 가깝다.
 
----
 
 ## 3.1 Raw → Month-level Aggregation
 
@@ -253,7 +252,6 @@ raw 데이터의 noise가 많고, 활용 가능한 속성이 매우 제한적이
 
 이 파일은 이후 모든 모델링·pair mining 단계의 표준 입력이다.
 
----
 
 ## 3.2 Noise Handling & Simplification
 
@@ -273,7 +271,6 @@ EDA에서 확인했듯이 raw 데이터에는 다음 문제가 존재했다:
 - active months 기준 이하의 품목은 후속 단계에서 자연스럽게 필터링
 - 월 단위 시계열의 길이를 유지하기 위해 모든 결측월 value=0 처리
 
----
 
 ## 3.3 Pivot Table Construction
 
@@ -300,7 +297,6 @@ pivot[month][item_id] = total_value
 
 즉, 전체 모델 파이프라인의 **중심 구조적 입력**이라고 할 수 있다.
 
----
 
 ## 3.4 Design Rationale (왜 이렇게 했는가?)
 
@@ -321,7 +317,6 @@ EDA 결과, 아래 두 가지가 매우 분명해졌다:
 이 설계 덕분에 이후 버전(v6~v13)에서도  
 전처리 구조는 거의 변하지 않고, FE와 모델링에서만 실험이 집중될 수 있었다.
 
----
 
 ## ✔ Summary
 
@@ -345,7 +340,6 @@ EDA 결과, 아래 두 가지가 매우 분명해졌다:
 따라서 FE는 단독 품목 시계열이 아니라 **Leader(A) – Follower(B) 쌍(pair) 단위**로 이루어진다.  
 이 섹션에서는 대표 모델(v10)의 FE 구조를 중심으로, 각 버전들이 공통적으로 사용한 핵심 개념을 정리한다.
 
----
 
 ## 4.1 FE 설계 철학
 
@@ -358,7 +352,6 @@ EDA 이후 확립된 FE 방향성은 다음과 같다.
 
 이 네 가지는 v1~v13 전체 버전에서 일관되게 유지된 FE의 핵심 원칙이다.
 
----
 
 ## 4.2 Follower-based Features (B 중심 특징)
 
@@ -378,7 +371,6 @@ Follower 시계열은 미래 예측의 직접적 단서이므로 가장 풍부�
 
 이 특징들은 B의 단기 패턴, 급격한 변화, 평균 수준, 변동성을 포착하는 데 중요한 역할을 했다.
 
----
 
 ## 4.3 Leader-aligned Features (Lag-aware A 특징)
 
@@ -401,7 +393,6 @@ B의 시점에 맞게 정렬한다.
 
 이 구조는 모델이 “A → B” 방향성을 자연스럽게 학습할 수 있도록 하는 핵심 요소였다.
 
----
 
 ## 4.4 Interaction Features (A×B 관계 표현)
 
@@ -415,7 +406,6 @@ A*는 aligned leader 값을 의미한다.
 이 특징들은 B 혼자만으로는 포착할 수 없는  
 “두 품목 간 구조적 관계”를 직접적으로 모델에 전달했다.
 
----
 
 ## 4.5 Meta Features (관계 신뢰도·유형 표현)
 
@@ -429,7 +419,6 @@ A*는 aligned leader 값을 의미한다.
 v10에서는 이 값을 기준으로 threshold를 자동 최적화하여  
 pair selection 품질을 획기적으로 개선했다.
 
----
 
 ## 4.6 Target Definition
 
@@ -444,7 +433,6 @@ LightGBM의 학습 안정성을 높였다.
 
 최종 예측 단계에서는 `exp1m`으로 복원 후 반올림 처리한다.
 
----
 
 ## 4.7 왜 이 FE 구조가 최적이었는가?
 
@@ -469,7 +457,6 @@ LightGBM의 학습 안정성을 높였다.
 Version 10(대표 모델)은 이 구조를 가장 최소·안정적으로 구현한 버전이며  
 LB 최고 점수를 기록했다.
 
----
 
 ## ✔ Summary
 
@@ -491,7 +478,6 @@ Feature Engineering은 이 프로젝트 성능을 결정한 핵심 요소였다.
 “**pair selection 품질이 전체 성능을 좌우한다**”는 결론에 도달했다.  
 각 버전은 전처리 → 공행성 탐색 → feature engineering → 모델링을 점진적으로 개선해 나가는 과정이었다.
 
----
 
 ## 4.1 Early Stage: Baseline → 구조 확립 (v1–v3)
 
@@ -507,7 +493,6 @@ Feature Engineering은 이 프로젝트 성능을 결정한 핵심 요소였다.
 
 ### **v3 – 서버 중단으로 폐기**
 
----
 
 ## 4.2 Structural Comovement Exploration (v4–v7)
 
@@ -531,7 +516,6 @@ Feature Engineering은 이 프로젝트 성능을 결정한 핵심 요소였다.
 - segment FE + smoothing  
 - 지나친 filtering → pair 수 급감
 
----
 
 ## 4.3 Sequence Regression & Domain Integration (v8–v9)
 
@@ -545,7 +529,6 @@ Feature Engineering은 이 프로젝트 성능을 결정한 핵심 요소였다.
 - HS2 산업 규칙 기반 threshold 조정  
 - 넓은 범위 pair 유지(1666개)
 
----
 
 ## 4.4 Final Stage: Threshold Optimization & Stability (v10–v13)
 
@@ -571,7 +554,6 @@ Feature Engineering은 이 프로젝트 성능을 결정한 핵심 요소였다.
 - MAE objective로 극단값 안정화  
 - 전반적 안정성·해석력 향상
 
----
 
 ## 4.5 Version별 Pair 수 & LB Score 비교
 
@@ -609,7 +591,6 @@ Version 10은 전체 실험에서 **가장 높은 리더보드 점수(0.32195)**
 1) **pair selection 품질을 극대화하는 threshold 자동 탐색**  
 2) **최소한의 필수 시계열 FE + LGBM seed ensemble로 안정적 예측**
 
----
 
 ## 5.1 Preprocessing: Minimal but Robust
 
@@ -624,7 +605,6 @@ Version 10은 전체 실험에서 **가장 높은 리더보드 점수(0.32195)**
 - 완전 panel 형태의 pivot (43개월 × 100개 품목)  
 - 모든 pair 연산의 기반이 되는 clean한 시계열 구조 확보
 
----
 
 ## 5.2 Pair Mining: Adaptive Threshold Optimization
 
@@ -662,7 +642,6 @@ Version 10은 전체 실험에서 **가장 높은 리더보드 점수(0.32195)**
 
 이는 v1~v9에 비해 **가장 구조적으로 안정적인 pair 세트**였다.
 
----
 
 ## 5.3 Feature Engineering: Minimal TS FE
 
@@ -684,7 +663,6 @@ Version 10은 복잡한 FE 대신 **최소한의 but 충분한** 시계열 구�
 - sequence regression(v8)보다 간결  
 - 데이터 sparsity 환경에서 **overfitting을 최소화**
 
----
 
 ## 5.4 Modeling: LGBM Seed Ensemble
 
@@ -702,7 +680,6 @@ Version 10은 복잡한 FE 대신 **최소한의 but 충분한** 시계열 구�
 - FE를 복잡하게 만들 필요 없이 안정적인 패턴만 학습  
 - ensemble로 예측 분산 최소화
 
----
 
 ## 5.5 Inference: 마지막 row 기반 예측
 
@@ -717,7 +694,6 @@ Version 10 inference는 매우 단순하지만 효과적이다.
 - 최종 제출 1513 rows  
 - LB Score **0.32195 (전체 최고 기록)**
 
----
 
 ## 5.6 Why Version 10 is the Representative Model
 
@@ -737,7 +713,6 @@ Version 1부터 Version 13까지 모든 실험을 체계적으로 기록하며,
 **무엇이 성능을 올리고 무엇이 성능을 떨어뜨렸는지**를 명확히 파악하는 것이 목표였다.  
 이 섹션은 그 핵심적인 통찰을 간단히 정리한다.
 
----
 
 ## 6.1 Pair 수 변화와 LB 점수의 관계
 
@@ -776,7 +751,6 @@ Version 1부터 Version 13까지 모든 실험을 체계적으로 기록하며,
    - v12~v13은 FE와 모델이 고도화되었지만 v10보다 점수가 낮았다.  
    → **“좋은 pair 세트가 전체 성능의 90%를 결정한다”**라는 결론.
 
----
 
 ## 6.2 Threshold Ablation (Why 0.40?)
 
@@ -795,7 +769,6 @@ Version 10에서는 threshold를 sweep하여 비교했다.
 - threshold가 높으면 구조적 관계도 함께 사라짐  
 - **0.40은 두 효과의 균형점**이며 실제로 LB 최고 점수를 달성했다.
 
----
 
 ## 6.3 FE Ablation (필요한 것만 쓰는 것이 최적)
 
@@ -810,7 +783,6 @@ Version 10에서는 threshold를 sweep하여 비교했다.
 ### 결론  
 - FE 수를 늘리는 것보다 **pair 품질을 올리고 최소한의 TS 정보를 유지하는 것이 베스트**이다.
 
----
 
 ## 6.4 Model Ablation (LGBM 구조 실험)
 
@@ -821,7 +793,6 @@ Version 10에서는 threshold를 sweep하여 비교했다.
 | DART | early overfit 발생 |
 | **LGBM + seed ensemble** | 가장 안정적 (v10 기준 RMSE ≈ 2.26) |
 
----
 
 ## 6.5 최종 요약 — Best Practices
 
@@ -883,7 +854,6 @@ Version 10은 이 레포에서 가장 안정적이며 재현성이 높은 파이
 - `data/raw/train.csv`
 - `data/raw/sample_submission.csv`
 
----
 
 #### **Step 2 — Pair Mining 실행**
 
@@ -900,7 +870,6 @@ python pair_generate_v10_best.py
 
 > best threshold = **0.40**, 최종 탐색된 공행성 쌍 = **1513개**
 
----
 
 #### **Step 3 — LGBM Seed Ensemble 실행**
 
@@ -929,7 +898,6 @@ python modeling_v10_lgbm_seed.py
 노트북은 실험·분석 중심,  
 스크립트는 **재현성(Reproducibility)** 중심으로 역할을 분리했다.
 
----
 
 ### 7.4 핵심 요약
 
@@ -951,39 +919,33 @@ python modeling_v10_lgbm_seed.py
 본 대회는 데이터 구조적 제약과 공행성 기반 문제 정의 때문에 여러 기술적 한계를 포함한다.  
 프로젝트 수행 과정에서 확인된 핵심 한계는 아래와 같다.
 
----
 
 ### **1) Sparse & Short Time Series**
 - 각 품목의 월별 시계열 길이가 30~40개로 매우 짧음  
 - value=0 구간이 많아 의미 있는 패턴 학습이 어려움  
 - FE 구성 변경에 따라 LB 점수가 ±0.1 이상 요동치는 **고변동(high-variance)** 환경
 
----
 
 ### **2) 공행성 신호의 불안정성**
 - lag-corr는 유용하지만 sparsity가 심한 품목에서 우연 패턴이 과대 반영될 위험  
 - best_lag이 시점별로 일정하지 않아 고정 lag 전제가 현실과 맞지 않음  
 
----
 
 ### **3) HS 계층 기반 도메인 정보 활용의 한계**
 - 같은 HS2/HS3/HS4 코드라도 실제 거래 규모·패턴이 완전히 상이  
 - 단순 군집 기반 feature는 공행성 탐색 품질에 기여도가 낮았음  
 
----
 
 ### **4) Pairwise Regression의 샘플 부족**
 - 공행성 쌍 하나당 usable row가 20~30개 수준  
 - LightGBM으로도 극저샘플 문제는 완전히 해결하기 어려움  
 
----
 
 ### **5) Feature Engineering 민감도 문제**
 - value scale, zero 비율, 변동성 차이가 커서  
   **FE가 조금만 바뀌어도 전체 점수가 무너지는 환경**  
 - raw value baseline이 오히려 안정적인 경우도 있었음  
 
----
 
 ### **6) 공행성 쌍 개수(pair count)에 대한 점수 의존성**
 - F1이 60% 가중 → pair count 조정이 점수에 직접적 영향  
@@ -996,37 +958,32 @@ python modeling_v10_lgbm_seed.py
 
 향후 연구 또는 대회 확장 시 고려할 수 있는 개선 방향은 다음과 같다.
 
----
 
 ### **1) Multi-Task Learning (관계 + 예측 통합 모델)**
 - 공행성 판별(F1)과 value 예측(NMAE)을 단일 모델에서 공동 학습  
 - 관계 신호가 회귀 학습으로 자연 전달 → 데이터 부족 문제 완화 가능  
 
----
 
 ### **2) Graph-based Modeling (GNN)**
 - 품목을 노드, 공행성을 edge로 구성하는 무역 네트워크 전략  
 - GCN/GAT 기반 graph forecasting 모델링 가능  
 
----
 
 ### **3) Dynamic Lag Modeling**
 - lag이 시점별로 변동하는 현실을 반영  
 - attention 기반 dynamic lag predictor 도입 가능  
 
----
 
 ### **4) Distribution-aware Regression**
 - zero-inflated, mixture, quantile regression 등  
 - value 분포의 왜도·scale 차이 해결 가능  
 
----
 
 ### **5) HS 계층 정보의 구조적 활용**
 - HS2~HS4 계층 embedding  
 - category-aware attention으로 의미적 구조를 모델이 직접 학습하게 함  
 
----
+
 
 ## ✔ 결과
 
