@@ -2,6 +2,8 @@
 **주제:** 품목 간 무역 연동성 분석 및 미래 예측  
 **주최:** 국민대학교 경영대학원 · 한국기계산업진흥회(KOAMI)
 
+팀 레포: https://github.com/Girls-Night/dacon-trade-forecast-team_girls_night 
+
 ---
 
 # 1. Introduction
